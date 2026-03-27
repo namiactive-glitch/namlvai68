@@ -518,22 +518,6 @@ const App = () => {
     }
   };
 
-  if (!isLoggedIn) {
-    return <Login onLogin={(durationDays) => {
-      try {
-        if (durationDays !== null) {
-          localStorage.setItem('trialDuration', (durationDays * 24 * 60 * 60).toString());
-        } else {
-          localStorage.setItem('trialDuration', '-1');
-        }
-        localStorage.setItem('isLoggedIn', 'true');
-      } catch (e) {
-        console.warn("Error saving login state to localStorage:", e);
-      }
-      setIsLoggedIn(true);
-    }} />;
-  }
-
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 font-sans selection:bg-orange-100 flex flex-col">
       <Toaster position="top-right" richColors />
@@ -571,146 +555,166 @@ const App = () => {
                   <Clapperboard size={20} />
                 </div>
                 <div>
-                  <h1 className="text-lg md:text-xl bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-amber-600">
-                    
+                  <h1 className="text-lg md:text-xl bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-amber-600 font-bold">
+                    NAM AI
                   </h1>
-                  <p className="text-[10px] md:text-xs text-slate-500"> </p>
+                  <p className="text-[10px] md:text-xs text-slate-500 font-medium">Hệ thống AI Nhân Hóa Chuyên Nghiệp</p>
                 </div>
               </div>
 
               <div className="flex lg:hidden flex-col items-end gap-1">
-                <div className="flex items-center bg-slate-50 p-1 rounded-xl border border-slate-200 gap-0.5">
+                {isLoggedIn ? (
+                  <>
+                    <div className="flex items-center bg-slate-50 p-1 rounded-xl border border-slate-200 gap-0.5">
+                      <button 
+                        onClick={() => setShowResetModal(true)}
+                        className="p-2 text-slate-500 hover:text-orange-600 hover:bg-orange-100/50 rounded-lg transition-all active:scale-95"
+                        title="Làm mới"
+                      >
+                        <RefreshCw size={18} />
+                      </button>
+                      <button 
+                        onClick={handleLogout} 
+                        className="p-2 text-slate-500 hover:text-red-600 hover:bg-red-100/50 rounded-lg transition-all active:scale-95"
+                        title="Đăng xuất"
+                      >
+                        <LogOut size={18} />
+                      </button>
+                    </div>
+                    {timeLeft !== null && (
+                      <div className="px-2 py-0.5 flex items-center gap-1 text-orange-600 bg-orange-50 rounded-lg border border-orange-100">
+                        <Clock size={10} className="animate-pulse" />
+                        <span className="text-[9px] tabular-nums whitespace-nowrap">
+                          {formatTimeLeft(timeLeft)}
+                        </span>
+                      </div>
+                    )}
+                  </>
+                ) : (
                   <button 
-                    onClick={() => setShowResetModal(true)}
-                    className="p-2 text-slate-500 hover:text-orange-600 hover:bg-orange-100/50 rounded-lg transition-all active:scale-95"
-                    title="Làm mới"
+                    onClick={() => setActiveModule('script')}
+                    className="px-4 py-2 bg-gradient-to-r from-orange-600 to-amber-600 text-white rounded-xl text-xs font-medium shadow-md active:scale-95 transition-all"
                   >
-                    <RefreshCw size={18} />
+                    Đăng nhập
                   </button>
-                  <button 
-                    onClick={handleLogout} 
-                    className="p-2 text-slate-500 hover:text-red-600 hover:bg-red-100/50 rounded-lg transition-all active:scale-95"
-                    title="Đăng xuất"
-                  >
-                    <LogOut size={18} />
-                  </button>
-                </div>
-                {timeLeft !== null && (
-                  <div className="px-2 py-0.5 flex items-center gap-1 text-orange-600 bg-orange-50 rounded-lg border border-orange-100">
-                    <Clock size={10} className="animate-pulse" />
-                    <span className="text-[9px] tabular-nums whitespace-nowrap">
-                      {formatTimeLeft(timeLeft)}
-                    </span>
-                  </div>
                 )}
               </div>
             </div>
           
             <div className="flex flex-col items-center w-full lg:w-auto max-w-full overflow-hidden">
               <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 w-full lg:w-auto overflow-x-auto no-scrollbar">
-              <button 
-                onClick={() => setActiveModule('guide')}
-                className={`flex-1 md:flex-none whitespace-nowrap px-3 md:px-4 py-2 rounded-lg text-[11px] md:text-sm transition-all flex items-center justify-center gap-2 ${activeModule === 'guide' ? 'bg-white text-violet-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
-              >
-                <BookOpen size={14} /> Hướng dẫn
-              </button>
-              <button 
-                onClick={() => setActiveModule('script')}
-                className={`flex-1 md:flex-none whitespace-nowrap px-3 md:px-4 py-2 rounded-lg text-[11px] md:text-sm transition-all flex items-center justify-center gap-2 ${activeModule === 'script' ? 'bg-white text-orange-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
-              >
-                <Clapperboard size={14} /> Nhân Hóa
-              </button>
-              <button 
-                onClick={() => setActiveModule('tts')}
-                className={`flex-1 md:flex-none whitespace-nowrap px-3 md:px-4 py-2 rounded-lg text-[11px] md:text-sm transition-all flex items-center justify-center gap-2 ${activeModule === 'tts' ? 'bg-white text-orange-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
-              >
-                <Mic size={14} /> Giọng Đọc
-              </button>
-              <button 
-                onClick={() => setActiveModule('tryon')}
-                className={`flex-1 md:flex-none whitespace-nowrap px-3 md:px-4 py-2 rounded-lg text-[11px] md:text-sm transition-all flex items-center justify-center gap-2 ${activeModule === 'tryon' ? 'bg-white text-orange-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
-              >
-                <Shirt size={14} /> Thử Đồ
-              </button>
-              <button 
-                onClick={() => setActiveModule('vision')}
-                className={`flex-1 md:flex-none whitespace-nowrap px-3 md:px-4 py-2 rounded-lg text-[11px] md:text-sm transition-all flex items-center justify-center gap-2 ${activeModule === 'vision' ? 'bg-white text-orange-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
-              >
-                <ScanEye size={14} /> Quét Ảnh
-              </button>
-              <button 
-                onClick={() => setActiveModule('affiliate_veo3')}
-                className={`flex-1 md:flex-none whitespace-nowrap px-3 md:px-4 py-2 rounded-lg text-[11px] md:text-sm transition-all flex items-center justify-center gap-2 ${activeModule === 'affiliate_veo3' ? 'bg-white text-violet-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
-              >
-                <Tag size={14} /> AFFILATE VEO3
-              </button>
-              <button 
-                onClick={() => setActiveModule('marketing')}
-                className={`flex-1 md:flex-none whitespace-nowrap px-3 md:px-4 py-2 rounded-lg text-[11px] md:text-sm transition-all flex items-center justify-center gap-2 ${activeModule === 'marketing' ? 'bg-white text-orange-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
-              >
-                <TrendingUp size={14} /> GIẢI PHÁP MARKETING
-              </button>
-            </div>
-            <p className="text-[10px] text-slate-400 mt-1 animate-pulse text-center w-full max-w-full px-4 truncate">
-              ← Trượt sang phải để xem thêm ứng dụng →
-            </p>
-          </div>
-
-          <div className="hidden lg:flex flex-col items-end gap-1">
-            <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-200">
-              <input type="file" ref={fileInputRef} onChange={handleJsonUpload} accept=".json" className="hidden" />
-              {activeModule === 'script' && generatedData && (
                 <button 
-                  onClick={handleBack} 
-                  className="px-3 py-1.5 text-xs text-slate-600 hover:text-orange-600 hover:bg-white rounded-lg transition-all flex items-center gap-1.5 border border-transparent hover:border-slate-200 shadow-sm hover:shadow-md"
+                  onClick={() => setActiveModule('guide')}
+                  className={`flex-1 md:flex-none whitespace-nowrap px-3 md:px-4 py-2 rounded-lg text-[11px] md:text-sm transition-all flex items-center justify-center gap-2 ${activeModule === 'guide' ? 'bg-white text-violet-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 >
-                  <ArrowLeft size={14} /> Quay lại
+                  <BookOpen size={14} /> Hướng dẫn
+                </button>
+                <button 
+                  onClick={() => setActiveModule('script')}
+                  className={`flex-1 md:flex-none whitespace-nowrap px-3 md:px-4 py-2 rounded-lg text-[11px] md:text-sm transition-all flex items-center justify-center gap-2 ${activeModule === 'script' ? 'bg-white text-orange-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                >
+                  <Clapperboard size={14} /> Nhân Hóa
+                </button>
+                <button 
+                  onClick={() => setActiveModule('tts')}
+                  className={`flex-1 md:flex-none whitespace-nowrap px-3 md:px-4 py-2 rounded-lg text-[11px] md:text-sm transition-all flex items-center justify-center gap-2 ${activeModule === 'tts' ? 'bg-white text-orange-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                >
+                  <Mic size={14} /> Giọng Đọc
+                </button>
+                <button 
+                  onClick={() => setActiveModule('tryon')}
+                  className={`flex-1 md:flex-none whitespace-nowrap px-3 md:px-4 py-2 rounded-lg text-[11px] md:text-sm transition-all flex items-center justify-center gap-2 ${activeModule === 'tryon' ? 'bg-white text-orange-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                >
+                  <Shirt size={14} /> Thử Đồ
+                </button>
+                <button 
+                  onClick={() => setActiveModule('vision')}
+                  className={`flex-1 md:flex-none whitespace-nowrap px-3 md:px-4 py-2 rounded-lg text-[11px] md:text-sm transition-all flex items-center justify-center gap-2 ${activeModule === 'vision' ? 'bg-white text-orange-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                >
+                  <ScanEye size={14} /> Quét Ảnh
+                </button>
+                <button 
+                  onClick={() => setActiveModule('affiliate_veo3')}
+                  className={`flex-1 md:flex-none whitespace-nowrap px-3 md:px-4 py-2 rounded-lg text-[11px] md:text-sm transition-all flex items-center justify-center gap-2 ${activeModule === 'affiliate_veo3' ? 'bg-white text-violet-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                >
+                  <Tag size={14} /> AFFILATE VEO3
+                </button>
+                <button 
+                  onClick={() => setActiveModule('marketing')}
+                  className={`flex-1 md:flex-none whitespace-nowrap px-3 md:px-4 py-2 rounded-lg text-[11px] md:text-sm transition-all flex items-center justify-center gap-2 ${activeModule === 'marketing' ? 'bg-white text-orange-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                >
+                  <TrendingUp size={14} /> GIẢI PHÁP MARKETING
+                </button>
+              </div>
+              <p className="text-[10px] text-slate-400 mt-1 animate-pulse text-center w-full max-w-full px-4 truncate">
+                ← Trượt sang phải để xem thêm ứng dụng →
+              </p>
+            </div>
+
+            <div className="hidden lg:flex flex-col items-end gap-1">
+              {isLoggedIn ? (
+                <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-200">
+                  <input type="file" ref={fileInputRef} onChange={handleJsonUpload} accept=".json" className="hidden" />
+                  {activeModule === 'script' && generatedData && (
+                    <button 
+                      onClick={handleBack} 
+                      className="px-3 py-1.5 text-xs text-slate-600 hover:text-orange-600 hover:bg-white rounded-lg transition-all flex items-center gap-1.5 border border-transparent hover:border-slate-200 shadow-sm hover:shadow-md"
+                    >
+                      <ArrowLeft size={14} /> Quay lại
+                    </button>
+                  )}
+                  
+                  <div className="h-4 w-px bg-slate-200 mx-1"></div>
+                  
+                  <button 
+                    onClick={() => setShowApiKeyManager(true)}
+                    className="p-2 text-slate-500 hover:text-orange-600 hover:bg-white rounded-lg transition-all group relative"
+                    title="Quản lý API Keys"
+                  >
+                    <Key size={18} />
+                    <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">API Keys</span>
+                  </button>
+
+                  <button 
+                    onClick={() => setShowResetModal(true)}
+                    className="p-2 text-slate-500 hover:text-orange-600 hover:bg-white rounded-lg transition-all group relative"
+                    title="Làm mới hệ thống"
+                  >
+                    <RefreshCw size={18} className="group-hover:rotate-180 transition-transform duration-500" />
+                    <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">Làm mới</span>
+                  </button>
+
+                  <button 
+                    onClick={handleLogout} 
+                    className="p-2 text-slate-500 hover:text-red-600 hover:bg-white rounded-lg transition-all group relative"
+                    title="Đăng xuất"
+                  >
+                    <LogOut size={18} className="group-hover:translate-x-0.5 transition-transform" />
+                    <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">Đăng xuất</span>
+                  </button>
+                </div>
+              ) : (
+                <button 
+                  onClick={() => setActiveModule('script')}
+                  className="px-6 py-2 bg-gradient-to-r from-orange-600 to-amber-600 text-white rounded-xl text-sm font-medium shadow-lg hover:scale-[1.02] active:scale-95 transition-all"
+                >
+                  Đăng nhập
                 </button>
               )}
-              
-              <div className="h-4 w-px bg-slate-200 mx-1"></div>
-              
-              <button 
-                onClick={() => setShowApiKeyManager(true)}
-                className="p-2 text-slate-500 hover:text-orange-600 hover:bg-white rounded-lg transition-all group relative"
-                title="Quản lý API Keys"
-              >
-                <Key size={18} />
-                <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">API Keys</span>
-              </button>
-
-              <button 
-                onClick={() => setShowResetModal(true)}
-                className="p-2 text-slate-500 hover:text-orange-600 hover:bg-white rounded-lg transition-all group relative"
-                title="Làm mới hệ thống"
-              >
-                <RefreshCw size={18} className="group-hover:rotate-180 transition-transform duration-500" />
-                <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">Làm mới</span>
-              </button>
-
-              <button 
-                onClick={handleLogout} 
-                className="p-2 text-slate-500 hover:text-red-600 hover:bg-white rounded-lg transition-all group relative"
-                title="Đăng xuất"
-              >
-                <LogOut size={18} className="group-hover:translate-x-0.5 transition-transform" />
-                <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">Đăng xuất</span>
-              </button>
+              {isLoggedIn && timeLeft !== null && (
+                <div className="px-3 py-1 flex items-center gap-2 text-orange-600 bg-orange-50 rounded-lg border border-orange-100">
+                  <Clock size={12} className="animate-pulse" />
+                  <span className="text-[10px] tabular-nums whitespace-nowrap">
+                    Hạn dùng: {formatTimeLeft(timeLeft)}
+                  </span>
+                </div>
+              )}
             </div>
-            {timeLeft !== null && (
-              <div className="px-3 py-1 flex items-center gap-2 text-orange-600 bg-orange-50 rounded-lg border border-orange-100">
-                <Clock size={12} className="animate-pulse" />
-                <span className="text-[10px] tabular-nums whitespace-nowrap">
-                  Hạn dùng: {formatTimeLeft(timeLeft)}
-                </span>
-              </div>
-            )}
-          </div>
           </div>
         </header>
-    </div>
+      </div>
 
-    <main className="max-w-6xl mx-auto px-4 py-8 flex-grow w-full">
+      <main className="max-w-6xl mx-auto px-4 py-8 flex-grow w-full">
         <AnimatePresence mode="wait">
           {activeModule === 'guide' ? (
             <motion.div
@@ -721,6 +725,38 @@ const App = () => {
               transition={{ duration: 0.3 }}
             >
               <UserGuide onNavigate={setActiveModule} />
+            </motion.div>
+          ) : activeModule === 'marketing' ? (
+            <motion.div
+              key="marketing-module"
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -20 }}
+              transition={{ duration: 0.3 }}
+            >
+              <MarketingSolutions />
+            </motion.div>
+          ) : !isLoggedIn ? (
+            <motion.div
+              key="login-module"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.3 }}
+            >
+              <Login onLogin={(durationDays) => {
+                try {
+                  if (durationDays !== null) {
+                    localStorage.setItem('trialDuration', (durationDays * 24 * 60 * 60).toString());
+                  } else {
+                    localStorage.setItem('trialDuration', '-1');
+                  }
+                  localStorage.setItem('isLoggedIn', 'true');
+                } catch (e) {
+                  console.warn("Error saving login state to localStorage:", e);
+                }
+                setIsLoggedIn(true);
+              }} />
             </motion.div>
           ) : activeModule === 'tryon' ? (
             <motion.div
@@ -751,16 +787,6 @@ const App = () => {
               transition={{ duration: 0.3 }}
             >
               <AffiliateVeo3Module />
-            </motion.div>
-          ) : activeModule === 'marketing' ? (
-            <motion.div
-              key="marketing-module"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              <MarketingSolutions />
             </motion.div>
           ) : activeModule === 'tts' ? (
             <motion.div
