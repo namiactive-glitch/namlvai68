@@ -556,14 +556,14 @@ const App = () => {
                 </div>
                 <div>
                   <h1 className="text-lg md:text-xl bg-clip-text text-transparent bg-gradient-to-r from-orange-600 to-amber-600 font-bold">
-                    NAM AI
+                    
                   </h1>
-                  <p className="text-[10px] md:text-xs text-slate-500 font-medium">Hệ thống AI Nhân Hóa Chuyên Nghiệp</p>
+                  <p className="text-[10px] md:text-xs text-slate-500 font-medium"> </p>
                 </div>
               </div>
 
               <div className="flex lg:hidden flex-col items-end gap-1">
-                {isLoggedIn ? (
+                {isLoggedIn && (
                   <>
                     <div className="flex items-center bg-slate-50 p-1 rounded-xl border border-slate-200 gap-0.5">
                       <button 
@@ -590,13 +590,6 @@ const App = () => {
                       </div>
                     )}
                   </>
-                ) : (
-                  <button 
-                    onClick={() => setActiveModule('script')}
-                    className="px-4 py-2 bg-gradient-to-r from-orange-600 to-amber-600 text-white rounded-xl text-xs font-medium shadow-md active:scale-95 transition-all"
-                  >
-                    Đăng nhập
-                  </button>
                 )}
               </div>
             </div>
@@ -652,62 +645,57 @@ const App = () => {
             </div>
 
             <div className="hidden lg:flex flex-col items-end gap-1">
-              {isLoggedIn ? (
-                <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-200">
-                  <input type="file" ref={fileInputRef} onChange={handleJsonUpload} accept=".json" className="hidden" />
-                  {activeModule === 'script' && generatedData && (
+              {isLoggedIn && (
+                <>
+                  <div className="flex items-center gap-1 bg-slate-50 p-1 rounded-xl border border-slate-200">
+                    <input type="file" ref={fileInputRef} onChange={handleJsonUpload} accept=".json" className="hidden" />
+                    {activeModule === 'script' && generatedData && (
+                      <button 
+                        onClick={handleBack} 
+                        className="px-3 py-1.5 text-xs text-slate-600 hover:text-orange-600 hover:bg-white rounded-lg transition-all flex items-center gap-1.5 border border-transparent hover:border-slate-200 shadow-sm hover:shadow-md"
+                      >
+                        <ArrowLeft size={14} /> Quay lại
+                      </button>
+                    )}
+                    
+                    <div className="h-4 w-px bg-slate-200 mx-1"></div>
+                    
                     <button 
-                      onClick={handleBack} 
-                      className="px-3 py-1.5 text-xs text-slate-600 hover:text-orange-600 hover:bg-white rounded-lg transition-all flex items-center gap-1.5 border border-transparent hover:border-slate-200 shadow-sm hover:shadow-md"
+                      onClick={() => setShowApiKeyManager(true)}
+                      className="p-2 text-slate-500 hover:text-orange-600 hover:bg-white rounded-lg transition-all group relative"
+                      title="Quản lý API Keys"
                     >
-                      <ArrowLeft size={14} /> Quay lại
+                      <Key size={18} />
+                      <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">API Keys</span>
                     </button>
+
+                    <button 
+                      onClick={() => setShowResetModal(true)}
+                      className="p-2 text-slate-500 hover:text-orange-600 hover:bg-white rounded-lg transition-all group relative"
+                      title="Làm mới hệ thống"
+                    >
+                      <RefreshCw size={18} className="group-hover:rotate-180 transition-transform duration-500" />
+                      <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">Làm mới</span>
+                    </button>
+
+                    <button 
+                      onClick={handleLogout} 
+                      className="p-2 text-slate-500 hover:text-red-600 hover:bg-white rounded-lg transition-all group relative"
+                      title="Đăng xuất"
+                    >
+                      <LogOut size={18} className="group-hover:translate-x-0.5 transition-transform" />
+                      <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">Đăng xuất</span>
+                    </button>
+                  </div>
+                  {timeLeft !== null && (
+                    <div className="px-3 py-1 flex items-center gap-2 text-orange-600 bg-orange-50 rounded-lg border border-orange-100">
+                      <Clock size={12} className="animate-pulse" />
+                      <span className="text-[10px] tabular-nums whitespace-nowrap">
+                        Hạn dùng: {formatTimeLeft(timeLeft)}
+                      </span>
+                    </div>
                   )}
-                  
-                  <div className="h-4 w-px bg-slate-200 mx-1"></div>
-                  
-                  <button 
-                    onClick={() => setShowApiKeyManager(true)}
-                    className="p-2 text-slate-500 hover:text-orange-600 hover:bg-white rounded-lg transition-all group relative"
-                    title="Quản lý API Keys"
-                  >
-                    <Key size={18} />
-                    <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">API Keys</span>
-                  </button>
-
-                  <button 
-                    onClick={() => setShowResetModal(true)}
-                    className="p-2 text-slate-500 hover:text-orange-600 hover:bg-white rounded-lg transition-all group relative"
-                    title="Làm mới hệ thống"
-                  >
-                    <RefreshCw size={18} className="group-hover:rotate-180 transition-transform duration-500" />
-                    <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">Làm mới</span>
-                  </button>
-
-                  <button 
-                    onClick={handleLogout} 
-                    className="p-2 text-slate-500 hover:text-red-600 hover:bg-white rounded-lg transition-all group relative"
-                    title="Đăng xuất"
-                  >
-                    <LogOut size={18} className="group-hover:translate-x-0.5 transition-transform" />
-                    <span className="absolute -bottom-8 left-1/2 -translate-x-1/2 px-2 py-1 bg-slate-800 text-white text-[10px] rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none z-50">Đăng xuất</span>
-                  </button>
-                </div>
-              ) : (
-                <button 
-                  onClick={() => setActiveModule('script')}
-                  className="px-6 py-2 bg-gradient-to-r from-orange-600 to-amber-600 text-white rounded-xl text-sm font-medium shadow-lg hover:scale-[1.02] active:scale-95 transition-all"
-                >
-                  Đăng nhập
-                </button>
-              )}
-              {isLoggedIn && timeLeft !== null && (
-                <div className="px-3 py-1 flex items-center gap-2 text-orange-600 bg-orange-50 rounded-lg border border-orange-100">
-                  <Clock size={12} className="animate-pulse" />
-                  <span className="text-[10px] tabular-nums whitespace-nowrap">
-                    Hạn dùng: {formatTimeLeft(timeLeft)}
-                  </span>
-                </div>
+                </>
               )}
             </div>
           </div>
