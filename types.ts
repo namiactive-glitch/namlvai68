@@ -58,7 +58,7 @@ export interface ScriptLine {
 export interface VeoPrompt {
   type: string;
   prompt: string;
-  dialogue_segment: string; // The specific 12s dialogue for this shot
+  dialogue_segment: string; // The specific 8s dialogue for this shot
 }
 
 export interface SoundDesign {

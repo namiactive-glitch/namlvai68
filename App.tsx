@@ -5,8 +5,7 @@ import { Toaster, toast } from 'sonner';
 import CharacterInput from './components/CharacterInput';
 import ResultDisplay from './components/ResultDisplay';
 import { TextToSpeech } from './components/TextToSpeech';
-import { VisionScanner } from './components/VisionScanner';
-import { VirtualTryOn } from './components/VirtualTryOn';
+import { ImageAI } from './components/ImageAI';
 import UserGuide from './components/UserGuide';
 import AffiliateVeo3Module from './components/AffiliateVeo3Module';
 import MarketingSolutions from './components/MarketingSolutions';
@@ -84,10 +83,11 @@ const App = () => {
     }
   });
   const [showApiKeyManager, setShowApiKeyManager] = useState(false);
-  const [activeModule, setActiveModule] = useState<'script' | 'tts' | 'vision' | 'tryon' | 'guide' | 'affiliate_veo3' | 'marketing'>(() => {
+  const [activeModule, setActiveModule] = useState<'script' | 'tts' | 'image_ai' | 'guide' | 'affiliate_veo3' | 'marketing'>(() => {
     try {
       const saved = localStorage.getItem('activeModule');
       if (saved === 'affiliate' || saved === 'hacks' || saved === 'troll_video') return 'affiliate_veo3';
+      if (saved === 'tryon' || saved === 'vision') return 'image_ai';
       return (saved as any) || 'guide';
     } catch (e) {
       return 'guide';
@@ -615,16 +615,10 @@ const App = () => {
                   <Mic size={14} /> Giọng Đọc
                 </button>
                 <button 
-                  onClick={() => setActiveModule('tryon')}
-                  className={`flex-1 md:flex-none whitespace-nowrap px-3 md:px-4 py-2 rounded-lg text-[11px] md:text-sm transition-all flex items-center justify-center gap-2 ${activeModule === 'tryon' ? 'bg-white text-orange-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
+                  onClick={() => setActiveModule('image_ai')}
+                  className={`flex-1 md:flex-none whitespace-nowrap px-3 md:px-4 py-2 rounded-lg text-[11px] md:text-sm transition-all flex items-center justify-center gap-2 ${activeModule === 'image_ai' ? 'bg-white text-orange-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
                 >
-                  <Shirt size={14} /> Thử Đồ
-                </button>
-                <button 
-                  onClick={() => setActiveModule('vision')}
-                  className={`flex-1 md:flex-none whitespace-nowrap px-3 md:px-4 py-2 rounded-lg text-[11px] md:text-sm transition-all flex items-center justify-center gap-2 ${activeModule === 'vision' ? 'bg-white text-orange-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'}`}
-                >
-                  <ScanEye size={14} /> Quét Ảnh
+                  <ImageIcon size={14} /> ẢNH AI
                 </button>
                 <button 
                   onClick={() => setActiveModule('affiliate_veo3')}
@@ -746,25 +740,15 @@ const App = () => {
                 setIsLoggedIn(true);
               }} />
             </motion.div>
-          ) : activeModule === 'tryon' ? (
+          ) : activeModule === 'image_ai' ? (
             <motion.div
-              key="tryon-module"
+              key="image-ai-module"
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -20 }}
               transition={{ duration: 0.3 }}
             >
-              <VirtualTryOn onQuotaExceeded={() => setShowQuotaModal(true)} />
-            </motion.div>
-          ) : activeModule === 'vision' ? (
-            <motion.div
-              key="vision-scanner"
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.3 }}
-            >
-              <VisionScanner onQuotaExceeded={() => setShowQuotaModal(true)} />
+              <ImageAI onQuotaExceeded={() => setShowQuotaModal(true)} />
             </motion.div>
           ) : activeModule === 'affiliate_veo3' ? (
             <motion.div
